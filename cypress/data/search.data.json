@@ -1,0 +1,39 @@
+{
+    "searchQueries": [
+        "Cypress testing",
+        "JavaScript Cypress",
+        "Automation framework",
+        "Web testing tools",
+        "QA testing frameworks",
+        "End to end testing",
+        "BDD Cucumber testing",
+        "Page object model",
+        "Selenium vs Cypress"
+    ],
+    "testData": {
+        "validSearches": [
+            "Cypress automation",
+            "JavaScript testing",
+            "QA automation"
+        ],
+        "expectedResultsMinimum": 0,
+        "expectedTitlePattern": "Search",
+        "googleUrl": "https://www.google.com",
+        "googleSearchPath": "/search"
+    },
+    "selectors": {
+        "searchBox": "input[name='q']",
+        "searchButton": "button[name='btnK']",
+        "results": "div.g",
+        "resultTitle": "h3",
+        "resultLink": "a[href^='http']",
+        "googleLogo": "img[alt='Google']"
+    },
+    "assertions": {
+        "pageTitle": "Google",
+        "searchResultsVisible": true,
+        "resultsCountGreaterThan": 0,
+        "firstResultClickable": true,
+        "allLinksValid": true
+    }
+}
