@@ -2,10 +2,11 @@ const { defineConfig } = require('cypress');
 const createBundler = require('@bahmutov/cypress-esbuild-preprocessor');
 const addCucumberPreprocessorPlugin = require('@badeball/cypress-cucumber-preprocessor').addCucumberPreprocessorPlugin;
 const createEsbuildPlugin = require('@badeball/cypress-cucumber-preprocessor/esbuild').createEsbuildPlugin;
+const allureWriter = require('@shelex/cypress-allure-plugin/writer');
 
 module.exports = defineConfig({
   e2e: {
-    baseUrl: 'https://www.google.com',
+    baseUrl: 'https://opensource-demo.orangehrmlive.com',
     viewportWidth: 1280,
     viewportHeight: 720,
     defaultCommandTimeout: 10000,
@@ -14,18 +15,14 @@ module.exports = defineConfig({
     pageLoadTimeout: 30000,
 
     async setupNodeEvents(on, config) {
-      // Add Cucumber preprocessor plugin
       await addCucumberPreprocessorPlugin(on, config);
 
-      // Create bundler with esbuild plugin
       const bundler = createBundler({
         plugins: [createEsbuildPlugin(config)],
       });
 
-      // Register file preprocessor
       on('file:preprocessor', bundler);
 
-      // Task for logging
       on('task', {
         log(message) {
           console.log(message);
@@ -33,10 +30,12 @@ module.exports = defineConfig({
         }
       });
 
+      allureWriter(on, config);
+
       return config;
     },
 
-    specPattern: 'cypress/e2e/**/*.feature',
+    specPattern: 'cypress/e2e/apps/**/*.feature',
     supportFile: 'cypress/support/e2e.js',
     chromeWebSecurity: false,
     video: true,
@@ -50,6 +49,9 @@ module.exports = defineConfig({
       overwrite: true,
       html: true,
       json: true
+    },
+    env: {
+      allure: true
     }
   },
 

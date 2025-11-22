@@ -1,70 +1,112 @@
-// Custom command to search Google
-Cypress.Commands.add('searchGoogle', (searchQuery) => {
-    cy.visit('https://www.google.com');
-    cy.wait(2000);
-    cy.get('input[name="q"]').type(searchQuery);
-    cy.get('input[name="q"]').type('{enter}');
-    cy.wait(3000);
-    cy.log(`✓ Searched for: ${searchQuery}`);
+Cypress.Commands.add('login', (username, password) => {
+    cy.visit('/web/index.php/auth/login');
+    cy.get('input[name="username"]').type(username);
+    cy.get('input[name="password"]').type(password);
+    cy.get('button[type="submit"]').click();
+    cy.url().should('include', '/dashboard');
 });
 
-// Custom command to get search results count
-Cypress.Commands.add('getResultsCount', () => {
-    return cy.get('div.g').its('length');
-});
-
-// Custom command to verify element with retry
-Cypress.Commands.add('verifyElementWithRetry', (selector, maxRetries = 3) => {
-    let attempts = 0;
-
-    const verify = () => {
-        attempts++;
-        return cy.get(selector, { timeout: 5000 }).catch(() => {
-            if (attempts < maxRetries) {
-                cy.wait(1000);
-                return verify();
-            }
-            throw new Error(`Element ${selector} not found after ${maxRetries} attempts`);
-        });
-    };
-
-    return verify();
-});
-
-// Custom command to take screenshot on failure
-Cypress.Commands.add('takeScreenshot', (filename) => {
-    cy.screenshot(filename, { overwrite: true });
-});
-
-// Custom command to clear all browser data
-Cypress.Commands.add('clearBrowserData', () => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-    cy.clearSessionStorage();
-    cy.log('✓ Browser data cleared');
-});
-
-// Custom command to get all links
-Cypress.Commands.add('getAllLinks', (selector) => {
-    return cy.get(selector).then($elements => {
-        const links = [];
-        $elements.each((index, element) => {
-            links.push(element.href);
-        });
-        return links;
+Cypress.Commands.add('loginWithdata', () => {
+    cy.fixture('pim.data.json').then((testData) => {
+        cy.login(
+            testData.login.validCredentials.username,
+            testData.login.validCredentials.password
+        );
     });
 });
 
-// Custom command to verify page load
-Cypress.Commands.add('verifyPageLoad', (timeout = 10000) => {
-    cy.get('body', { timeout }).should('exist');
-    cy.log('✓ Page loaded successfully');
+Cypress.Commands.add('navigateToPIM', () => {
+    cy.contains('PIM').click();
+    cy.url().should('include', '/pim');
 });
 
-// Custom command to perform search with enter key
-Cypress.Commands.add('searchWithEnter', (selector, searchQuery) => {
-    cy.get(selector).clear().type(searchQuery);
-    cy.get(selector).type('{enter}');
-    cy.wait(3000);
-    cy.log(`✓ Searched using Enter key for: ${searchQuery}`);
+Cypress.Commands.add('waitForPageLoad', () => {
+    cy.get('.oxd-loading-spinner', { timeout: 10000 }).should('not.exist');
+});
+
+Cypress.Commands.add('clickByText', (text) => {
+    cy.contains(text).click();
+});
+
+Cypress.Commands.add('typeWithClear', { prevSubject: 'element' }, (subject, text) => {
+    cy.wrap(subject).clear().type(text);
+});
+
+Cypress.Commands.add('selectDropdownOption', (dropdownSelector, optionText) => {
+    cy.get(dropdownSelector).click();
+    cy.contains(optionText).click();
+});
+
+Cypress.Commands.add('verifyToastMessage', (messageType = 'success') => {
+    cy.get(`.oxd-toast-content--${messageType}`).should('be.visible');
+});
+
+Cypress.Commands.add('waitAndClick', { prevSubject: 'element' }, (subject) => {
+    cy.wrap(subject).should('be.visible').wait(500).click();
+});
+
+Cypress.Commands.add('typeSlowly', { prevSubject: 'element' }, (subject, text, delay = 100) => {
+    cy.wrap(subject).clear();
+    text.split('').forEach((char) => {
+        cy.wrap(subject).type(char);
+        cy.wait(delay);
+    });
+});
+
+Cypress.Commands.add('shouldContainText', { prevSubject: 'element' }, (subject, text) => {
+    cy.wrap(subject).should('contain.text', text);
+});
+
+Cypress.Commands.add('clearAllFilters', () => {
+    cy.contains('button', 'Reset').click();
+    cy.wait(1000);
+});
+
+Cypress.Commands.add('takeScreenshot', (name) => {
+    const timestamp = new Date().getTime();
+    cy.screenshot(`${name}-${timestamp}`);
+});
+
+Cypress.Commands.add('elementExists', (selector) => {
+    cy.get('body').then($body => {
+        return $body.find(selector).length > 0;
+    });
+});
+
+Cypress.Commands.add('scrollAndClick', { prevSubject: 'element' }, (subject) => {
+    cy.wrap(subject).scrollIntoView().should('be.visible').click();
+});
+
+Cypress.Commands.add('waitForAPI', (alias, timeout = 10000) => {
+    cy.wait(alias, { timeout });
+});
+
+Cypress.Commands.add('selectAutocomplete', (inputSelector, searchText, optionText) => {
+    cy.get(inputSelector).clear().type(searchText);
+    cy.wait(1000);
+    cy.contains(optionText).click();
+});
+
+Cypress.Commands.add('verifyUrlContains', (urlPart) => {
+    cy.url().should('include', urlPart);
+});
+
+Cypress.Commands.add('getByTestId', (testId) => {
+    return cy.get(`[data-testid="${testId}"]`);
+});
+
+Cypress.Commands.add('clickByIndex', (selector, index) => {
+    cy.get(selector).eq(index).click();
+});
+
+Cypress.Commands.add('verifyTableHasData', (tableSelector) => {
+    cy.get(tableSelector).find('tr').should('have.length.at.least', 2);
+});
+
+Cypress.Commands.add('clearAndTypeIfExists', (selector, text) => {
+    cy.get('body').then($body => {
+        if ($body.find(selector).length > 0) {
+            cy.get(selector).clear().type(text);
+        }
+    });
 });

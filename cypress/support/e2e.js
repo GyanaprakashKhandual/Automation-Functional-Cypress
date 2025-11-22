@@ -1,30 +1,48 @@
-// Load commands
-require('./commands');
+import './commands';
+import '@shelex/cypress-allure-plugin';
 
-// Disable uncaught exception handling
 Cypress.on('uncaught:exception', (err, runnable) => {
     return false;
 });
 
-// Set default timeout
 Cypress.config('defaultCommandTimeout', 10000);
 
-// Before each test hook
-beforeEach(function () {
-    cy.log('========================================');
-    cy.log('TEST STARTED: ' + this.currentTest.title);
-    cy.log('========================================');
+beforeEach(() => {
+    cy.log('Test Started: ' + Cypress.currentTest.title);
 });
 
-// After each test hook
-afterEach(function () {
-    cy.log('========================================');
-    cy.log('TEST COMPLETED: ' + this.currentTest.title);
-    cy.log('========================================');
+afterEach(() => {
+    cy.log('Test Completed: ' + Cypress.currentTest.title);
+
+    if (Cypress.currentTest.state === 'failed') {
+        cy.screenshot(Cypress.currentTest.title + ' - FAILED');
+    }
 });
 
-// On test failure
-Cypress.on('fail', (error, runnable) => {
-    cy.screenshot(`failure-${Date.now()}`);
-    throw error;
+beforeEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
+});
+
+Cypress.on('uncaught:exception', (err, runnable) => {
+    return false;
+});
+
+Cypress.config('defaultCommandTimeout', 10000);
+
+beforeEach(() => {
+    cy.log('Test Started: ' + Cypress.currentTest.title);
+});
+
+afterEach(() => {
+    cy.log('Test Completed: ' + Cypress.currentTest.title);
+
+    if (Cypress.currentTest.state === 'failed') {
+        cy.screenshot(Cypress.currentTest.title + ' - FAILED');
+    }
+});
+
+beforeEach(() => {
+    cy.clearCookies();
+    cy.clearLocalStorage();
 });

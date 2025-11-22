@@ -1,92 +1,40 @@
 class BasePage {
-    constructor() {
-        this.timeout = 10000;
-    }
-
     visit(url) {
         cy.visit(url);
-        cy.wait(2000);
     }
 
-    click(selector) {
-        cy.get(selector, { timeout: this.timeout }).click();
+    clickElement(element) {
+        element().click();
     }
 
-    typeText(selector, text) {
-        cy.get(selector, { timeout: this.timeout }).clear().type(text, { delay: 50 });
+    typeText(element, text) {
+        element().clear().type(text);
+        return this;
     }
 
-    getText(selector) {
-        return cy.get(selector, { timeout: this.timeout }).invoke('text');
+    verifyUrlIncludes(urlPart) {
+        cy.url().should('include', urlPart);
     }
 
-    getAttribute(selector, attribute) {
-        return cy.get(selector, { timeout: this.timeout }).invoke('attr', attribute);
+    verifyElementVisible(element) {
+        element().should('be.visible');
     }
 
-    waitForElement(selector, timeout = this.timeout) {
-        cy.get(selector, { timeout }).should('be.visible');
+    verifyElementCount(element, count) {
+        element().should('have.length.at.least', count);
     }
 
-    isElementVisible(selector) {
-        return cy.get(selector, { timeout: this.timeout }).should('be.visible');
+    waitFor(milliseconds) {
+        cy.wait(milliseconds);
     }
 
-    isElementPresent(selector) {
-        return cy.get(selector, { timeout: this.timeout }).should('exist');
-    }
-
-    verifyElementText(selector, expectedText) {
-        cy.get(selector, { timeout: this.timeout }).should('contain', expectedText);
-    }
-
-    verifyPageTitle(expectedTitle) {
-        cy.title().should('include', expectedTitle);
-    }
-
-    verifyUrl(expectedUrl) {
-        cy.url().should('include', expectedUrl);
-    }
-
-    getElementCount(selector) {
-        return cy.get(selector, { timeout: this.timeout }).its('length');
-    }
-
-    scrollToElement(selector) {
-        cy.get(selector, { timeout: this.timeout }).scrollIntoView();
-    }
-
-    hoverOverElement(selector) {
-        cy.get(selector, { timeout: this.timeout }).trigger('mouseover');
-    }
-
-    waitForElementToDisappear(selector, timeout = this.timeout) {
-        cy.get(selector, { timeout }).should('not.exist');
-    }
-
-    assertElementExists(selector) {
-        cy.get(selector, { timeout: this.timeout }).should('exist');
-    }
-
-    assertElementDoesNotExist(selector) {
-        cy.get(selector, { timeout: this.timeout }).should('not.exist');
-    }
-
-    assertElementContainsText(selector, text) {
-        cy.get(selector, { timeout: this.timeout }).should('contain.text', text);
-    }
-
-    getPageTitle() {
-        return cy.title();
-    }
-
-    getCurrentUrl() {
-        return cy.url();
-    }
-
-    pressKey(key) {
-        cy.get('body').type(`{${key}}`);
+    clickWithForce(element, index = null) {
+        if (index !== null) {
+            element().eq(index).click({ force: true });
+        } else {
+            element().click({ force: true });
+        }
     }
 }
 
-module.exports = BasePage;
+export default BasePage;

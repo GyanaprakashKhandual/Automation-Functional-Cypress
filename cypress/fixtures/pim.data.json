@@ -1,0 +1,84 @@
+{
+  "login": {
+    "validCredentials": {
+      "username": "Admin",
+      "password": "admin123"
+    },
+    "invalidCredentials": {
+      "username": "InvalidUser",
+      "password": "InvalidPass123"
+    }
+  },
+  "employee": {
+    "addEmployee": {
+      "firstName": "John",
+      "middleName": "Michael",
+      "lastName": "Doe",
+      "employeeId": "EMP001",
+      "createLoginDetails": {
+        "username": "johndoe001",
+        "password": "Test@12345",
+        "confirmPassword": "Test@12345"
+      }
+    },
+    "searchEmployee": {
+      "employeeName": "John Doe",
+      "employeeId": "EMP001"
+    },
+    "editEmployee": {
+      "firstName": "Jane",
+      "middleName": "Elizabeth",
+      "lastName": "Smith",
+      "personalDetails": {
+        "licenseNumber": "DL123456",
+        "licenseExpiryDate": "2025-12-31",
+        "nationality": "American",
+        "maritalStatus": "Single",
+        "dateOfBirth": "1990-05-15",
+        "gender": "Female"
+      },
+      "contactDetails": {
+        "street1": "123 Main Street",
+        "street2": "Apt 4B",
+        "city": "New York",
+        "state": "NY",
+        "zipCode": "10001",
+        "country": "United States",
+        "homeTelephone": "555-1234",
+        "mobile": "555-5678",
+        "workTelephone": "555-9012",
+        "workEmail": "jane.smith@company.com",
+        "otherEmail": "jane.personal@email.com"
+      }
+    },
+    "deleteEmployee": {
+      "employeeName": "John Doe",
+      "employeeId": "EMP001"
+    }
+  },
+  "employeeList": {
+    "multipleEmployees": [
+      {
+        "firstName": "Alice",
+        "lastName": "Johnson",
+        "employeeId": "EMP002"
+      },
+      {
+        "firstName": "Bob",
+        "lastName": "Williams",
+        "employeeId": "EMP003"
+      },
+      {
+        "firstName": "Charlie",
+        "lastName": "Brown",
+        "employeeId": "EMP004"
+      }
+    ]
+  },
+  "reports": {
+    "employeeReport": {
+      "reportName": "Employee List Report",
+      "selectionCriteria": "All Employees"
+    }
+  }
+}
